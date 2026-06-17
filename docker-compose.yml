@@ -1,0 +1,40 @@
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-api-usuarios
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: bd_usuarios
+      MYSQL_USER: coti
+      MYSQL_PASSWORD: coti
+      MYSQL_ROOT_PASSWORD: coti
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - api_usuarios_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-api-usuarios
+    restart: always
+    ports:
+      - "5052:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: coti
+      PMA_PASSWORD: coti
+    depends_on:
+      - mysql
+    networks:
+      - api_usuarios_network
+
+volumes:
+  mysql_data:
+
+networks:
+  api_usuarios_network:
+    driver: bridge
