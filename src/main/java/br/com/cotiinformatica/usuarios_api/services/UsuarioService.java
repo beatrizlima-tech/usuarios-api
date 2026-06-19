@@ -1,8 +1,13 @@
 package br.com.cotiinformatica.usuarios_api.services;
 
+import br.com.cotiinformatica.usuarios_api.dtos.AutenticarUsuarioRequest;
+import br.com.cotiinformatica.usuarios_api.dtos.AutenticarUsuarioResponse;
 import br.com.cotiinformatica.usuarios_api.dtos.CriarUsuarioRequest;
 import br.com.cotiinformatica.usuarios_api.dtos.CriarUsuarioResponse;
 import br.com.cotiinformatica.usuarios_api.entities.Usuario;
+import br.com.cotiinformatica.usuarios_api.exceptions.AcessoNegadoException;
+import br.com.cotiinformatica.usuarios_api.exceptions.EmailJaCadastradoException;
+import br.com.cotiinformatica.usuarios_api.exceptions.SenhaInvalidaException;
 import br.com.cotiinformatica.usuarios_api.repositories.PerfilRepository;
 import br.com.cotiinformatica.usuarios_api.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.LocalDateTime;
 
 @Service
 public class UsuarioService {
@@ -20,9 +26,46 @@ public class UsuarioService {
     @Autowired //inicialização automática
     private PerfilRepository perfilRepository;
 
+    //Método para implementarmos um fluxo de autenticação
+    //de usuário no sistema (login do usuário)
+    public AutenticarUsuarioResponse autenticarUsuario(AutenticarUsuarioRequest request) throws Exception {
+
+        //Buscar o usuário no banco de dados através do email
+        var usuario = usuarioRepository.obterPorEmail(request.email());
+
+        //Verificar se o usuário foi encontrado e se a senha é igual ao valor enviado na requisição
+        if(usuario != null && usuario.getSenha().equals(criptografarSenha(request.senha()))) {
+
+            //Recuperar o perfil do usuário no banco de dados
+            var perfil = perfilRepository.obterPorId(usuario.getPerfilId());
+
+            //Retornar os dados do usuário autenticado
+            return new AutenticarUsuarioResponse(
+                    usuario.getId(),
+                    usuario.getNome(),
+                    usuario.getEmail(),
+                    perfil.getNome(),
+                    LocalDateTime.now(),
+                    "Seu token jwt será gerado aqui!"
+            );
+        }
+
+        throw new AcessoNegadoException();
+    }
+
     //Método para implementarmos um fluxo de criação
     //de usuário no sistema (novo usuário)
     public CriarUsuarioResponse criarUsuario(CriarUsuarioRequest request) throws Exception {
+
+        //Condição de segurança para verificar se a senha é uma senha forte
+        if(!validarSenhaForte(request.senha())) {
+            throw new SenhaInvalidaException();
+        }
+
+        //Condição de segurança para verificar se o email já está cadastrado
+        if(usuarioRepository.obterPorEmail(request.email()) != null) {
+            throw new EmailJaCadastradoException();
+        }
 
         var usuario = new Usuario();
 
@@ -65,5 +108,16 @@ public class UsuarioService {
         }
 
         return hexString.toString();
+    }
+
+    // Método para verificar se a senha é uma senha forte
+    private boolean validarSenhaForte(String senha) throws Exception {
+        if (senha == null) {
+            throw new Exception("A senha não pode ser nula.");
+        }
+
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$";
+
+        return senha.matches(regex);
     }
 }
