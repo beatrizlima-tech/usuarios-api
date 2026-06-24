@@ -9,3 +9,7 @@ datasource:
   host: jdbc:mysql://localhost:3307/bd_usuarios?useSSL=false&serverTimezone=America/Sao_Paulo
   user: coti
   pass: coti
+
+jwt:
+  secret: 2c3370b8-ff54-4897-8234-e4c1c3103151
+  expiration: 3600000

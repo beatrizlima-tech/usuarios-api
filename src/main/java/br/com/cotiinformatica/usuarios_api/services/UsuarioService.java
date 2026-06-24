@@ -1,9 +1,7 @@
 package br.com.cotiinformatica.usuarios_api.services;
 
-import br.com.cotiinformatica.usuarios_api.dtos.AutenticarUsuarioRequest;
-import br.com.cotiinformatica.usuarios_api.dtos.AutenticarUsuarioResponse;
-import br.com.cotiinformatica.usuarios_api.dtos.CriarUsuarioRequest;
-import br.com.cotiinformatica.usuarios_api.dtos.CriarUsuarioResponse;
+import br.com.cotiinformatica.usuarios_api.components.JwtComponent;
+import br.com.cotiinformatica.usuarios_api.dtos.*;
 import br.com.cotiinformatica.usuarios_api.entities.Usuario;
 import br.com.cotiinformatica.usuarios_api.exceptions.AcessoNegadoException;
 import br.com.cotiinformatica.usuarios_api.exceptions.EmailJaCadastradoException;
@@ -26,18 +24,25 @@ public class UsuarioService {
     @Autowired //inicialização automática
     private PerfilRepository perfilRepository;
 
+    @Autowired
+    private JwtComponent jwtComponent;
+
     //Método para implementarmos um fluxo de autenticação
-    //de usuário no sistema (login do usuário)
-    public AutenticarUsuarioResponse autenticarUsuario(AutenticarUsuarioRequest request) throws Exception {
+    //de usuário no sistema(login do usuário)
+    public AutenticarUsuarioResponse autenticarUsuario(AutenticarUsuarioRequest request) throws Exception{
 
         //Buscar o usuário no banco de dados através do email
-        var usuario = usuarioRepository.obterPorEmail(request.email());
+        var usuario = usuarioRepository
+                .obterPorEmail(request.email());
 
-        //Verificar se o usuário foi encontrado e se a senha é igual ao valor enviado na requisição
-        if(usuario != null && usuario.getSenha().equals(criptografarSenha(request.senha()))) {
+        //Verificar se o usuário foi encontrado
+        //e se a senha é igual ao valor enviado na requisição
+        if (usuario != null && usuario.getSenha()
+                .equals(criptografarSenha(request.senha()))) {
 
             //Recuperar o perfil do usuário no banco de dados
-            var perfil = perfilRepository.obterPorId(usuario.getPerfilId());
+            var perfil = perfilRepository
+                    .obterPorId(usuario.getPerfilId());
 
             //Retornar os dados do usuário autenticado
             return new AutenticarUsuarioResponse(
@@ -46,7 +51,8 @@ public class UsuarioService {
                     usuario.getEmail(),
                     perfil.getNome(),
                     LocalDateTime.now(),
-                    "Seu token jwt será gerado aqui!"
+                    jwtComponent.getAcessToken
+                            (usuario.getEmail(), perfil.getNome())
             );
         }
 
@@ -119,5 +125,23 @@ public class UsuarioService {
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$";
 
         return senha.matches(regex);
+    }
+
+    //Método para retornar os dados do usuário autenticado
+    public DadosUsuarioResponse obterDadosUsuario(String email) throws Exception {
+
+        //Buscar no banco de dados o registro do usuário através do email
+        var usuario = usuarioRepository.obterPorEmail(email);
+
+        //Buscar o perfil do usuário no banco de dados
+        var perfil = perfilRepository.obterPorId(usuario.getPerfilId());
+
+        //Retornar os dados
+        return new DadosUsuarioResponse(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                perfil.getNome()
+        );
     }
 }
