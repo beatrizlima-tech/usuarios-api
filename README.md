@@ -1,150 +1,188 @@
-# 🔐 Usuários API
+# 🔐 API Usuários
 
-API REST desenvolvida com Java e Spring Boot para gerenciamento e autenticação de usuários, aplicando conceitos modernos de segurança, arquitetura em camadas e documentação de APIs.
-
-O projeto implementa autenticação baseada em JWT, criptografia de senhas, controle de acesso, validações de negócio e documentação automática utilizando Swagger/OpenAPI.
-
----
-
-# 🚀 Tecnologias Utilizadas
-
-* Java
-* Spring Boot
-* JWT (JSON Web Token)
-* Swagger / OpenAPI
-* Maven
-* MySQL
-* JDBC
-* Lombok
+![Java](https://img.shields.io/badge/Java-21-red?style=for-the-badge\&logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.x-green?style=for-the-badge\&logo=springboot)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge\&logo=postgresql)
+![JWT](https://img.shields.io/badge/JWT-Autenticação-black?style=for-the-badge)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge\&logo=swagger)
+![License](https://img.shields.io/badge/license-MIT-lightgrey?style=for-the-badge)
 
 ---
 
-# ✨ Funcionalidades
+# 📌 Sobre o projeto
+
+A **API Usuários** é uma aplicação backend desenvolvida com **Java** e **Spring Boot** para cadastro e autenticação de usuários.
+
+O projeto implementa cadastro de usuários, autenticação utilizando **JWT**, criptografia de senhas com **SHA-256**, validações de negócio e documentação automática com **Swagger/OpenAPI**, seguindo uma arquitetura organizada em camadas.
+
+---
+
+# 🚀 Funcionalidades
 
 * Cadastro de usuários
 * Autenticação de usuários
-* Geração de Token JWT
-* Validação de Token JWT
-* Consulta de usuário autenticado
+* Geração de token JWT
 * Criptografia de senha com SHA-256
 * Validação de senha forte
 * Controle de perfis de usuário
-* Documentação automática da API com Swagger
+* Documentação da API com Swagger/OpenAPI
+* Configuração de CORS para integração com aplicações frontend
 
 ---
 
 # 🔒 Recursos de Segurança
 
-O projeto implementa diversos mecanismos utilizados em aplicações corporativas:
-
-* Autenticação baseada em JWT
-* Filtro de autenticação para rotas protegidas
-* Criptografia de senha utilizando SHA-256
-* Validação de senhas fortes
-* Controle de acesso por Token Bearer
+* Geração de Token JWT durante a autenticação
+* Criptografia de senhas utilizando SHA-256
+* Validação de senha forte através de Expressão Regular (Regex)
+* Perfis de usuário (Usuário Comum e Administrador)
 * Configuração de CORS
-* Tratamento de erros de autenticação
+
+> **Observação:** Nesta versão do projeto o token JWT é gerado durante o login, porém ainda não há filtro de autenticação para proteger os endpoints da aplicação.
 
 ---
 
-# 🏗️ Arquitetura
+# 🧱 Tecnologias Utilizadas
 
-O projeto segue uma arquitetura em camadas para separar responsabilidades e facilitar a manutenção do código.
+* Java 21
+* Spring Boot
+* Spring Web MVC
+* Spring Data JPA
+* PostgreSQL
+* JWT (JJWT)
+* Swagger / OpenAPI
+* Lombok
+* Maven
+
+---
+
+# 🏗️ Estrutura do Projeto
 
 ```text
-src/
-├── components
+src/main/java/br/com/cotiinformatica/api_usuarios/
+
 ├── configurations
 ├── controllers
 ├── dtos
 ├── entities
-├── exceptions
-├── factories
-├── filters
+├── enums
 ├── repositories
 └── services
 ```
 
 ---
 
-# 📌 Endpoints
+# 🔗 Endpoints
 
-| Método | Endpoint                      | Descrição                               |
-| ------ | ----------------------------- | --------------------------------------- |
-| POST   | `/api/v1/usuario/criar`       | Cadastro de usuário                     |
-| POST   | `/api/v1/usuario/autenticar`  | Login                                   |
-| GET    | `/api/v1/usuario/obter-dados` | Retorna os dados do usuário autenticado |
-
----
-
-# 🧠 Conceitos Aplicados
-
-Durante o desenvolvimento deste projeto foram aplicados conceitos amplamente utilizados no mercado:
-
-* Programação Orientada a Objetos
-* Arquitetura em Camadas
-* Injeção de Dependência
-* DTOs
-* JWT Authentication
-* Filtros HTTP
-* Criptografia de Senhas
-* Tratamento de Exceções
-* Boas práticas para APIs REST
-* Separação de responsabilidades
+| Método | Endpoint                     | Descrição                     |
+| ------ | ---------------------------- | ----------------------------- |
+| POST   | `/api/v1/usuario/criar`      | Cadastro de usuário           |
+| POST   | `/api/v1/usuario/autenticar` | Autenticação e geração do JWT |
 
 ---
 
-# ▶️ Como Executar
+# ⚙️ Como Executar
 
-## Pré-requisitos
-
-* Java 21+
-* Maven
-* MySQL
-
-## Clonar o projeto
+## 1. Clone o repositório
 
 ```bash
-git clone https://github.com/beatrizlima-tech/usuarios-api.git
+git clone https://github.com/beatrizlima-tech/api-usuarios.git
 ```
 
-## Configurar
+## 2. Configure o banco de dados
 
-Configure as propriedades do banco de dados e da aplicação no arquivo:
+Crie o banco PostgreSQL e configure as credenciais no arquivo:
 
-```text
+```properties
 application.properties
 ```
 
-Depois execute:
+Exemplo:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/seu_banco
+spring.datasource.username=postgres
+spring.datasource.password=senha
+```
+
+Também configure a chave JWT:
+
+```properties
+jwt.secret=sua_chave_secreta
+```
+
+---
+
+## 3. Execute a aplicação
 
 ```bash
 mvn spring-boot:run
 ```
 
-A API ficará disponível em:
+---
+
+## 4. Acesse a documentação
 
 ```text
-http://localhost:8080
-```
-
-Swagger:
-
-```text
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/swagger-ui.html
 ```
 
 ---
 
-# 📚 Objetivo
+# 📊 Arquitetura
 
-Este projeto foi desenvolvido para consolidar conhecimentos em desenvolvimento Backend com Java e Spring Boot, implementando autenticação baseada em JWT, segurança de APIs, arquitetura em camadas e boas práticas utilizadas em aplicações corporativas.
+```text
+Cliente (Frontend)
+        │
+        ▼
+Controller
+        │
+        ▼
+Service
+        │
+        ▼
+Repository
+        │
+        ▼
+PostgreSQL
+```
+
+---
+
+# 📚 Conceitos Aplicados
+
+* Programação Orientada a Objetos
+* Arquitetura em Camadas
+* API REST
+* DTO Pattern
+* Spring Data JPA
+* Injeção de Dependência
+* JWT
+* SHA-256
+* Regex para validação
+* PostgreSQL
+* Swagger/OpenAPI
+
+---
+
+# 📌 Melhorias Futuras
+
+* Implementar filtro JWT para proteger rotas
+* Controle de acesso por perfil
+* Refresh Token
+* Bean Validation
+* Tratamento global de exceções
+* Testes automatizados
+* Dockerização da aplicação
 
 ---
 
 # 👩‍💻 Autora
 
-**Beatriz Lima de Oliveira**
+Desenvolvido por **Beatriz Lima**
 
-GitHub:
+🔗 GitHub
 https://github.com/beatrizlima-tech
+
+💼 LinkedIn
+https://www.linkedin.com/in/beatrizlima-tech
