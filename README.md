@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-21-red?style=for-the-badge\&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.x-green?style=for-the-badge\&logo=springboot)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge\&logo=postgresql)
+![MySQL](https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge\&logo=mysql)
 ![JWT](https://img.shields.io/badge/JWT-Autenticação-black?style=for-the-badge)
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge\&logo=swagger)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey?style=for-the-badge)
@@ -15,18 +15,21 @@ A **API Usuários** é uma aplicação backend desenvolvida com **Java** e **Spr
 
 O projeto implementa cadastro de usuários, autenticação utilizando **JWT**, criptografia de senhas com **SHA-256**, validações de negócio e documentação automática com **Swagger/OpenAPI**, seguindo uma arquitetura organizada em camadas.
 
+Além da aplicação, o ambiente de desenvolvimento conta com **Docker Compose**, disponibilizando automaticamente o banco de dados **MySQL** e o **phpMyAdmin**.
+
 ---
 
 # 🚀 Funcionalidades
 
 * Cadastro de usuários
 * Autenticação de usuários
-* Geração de token JWT
+* Geração de Token JWT
 * Criptografia de senha com SHA-256
 * Validação de senha forte
 * Controle de perfis de usuário
 * Documentação da API com Swagger/OpenAPI
 * Configuração de CORS para integração com aplicações frontend
+* Ambiente de banco de dados com Docker Compose
 
 ---
 
@@ -48,7 +51,9 @@ O projeto implementa cadastro de usuários, autenticação utilizando **JWT**, c
 * Spring Boot
 * Spring Web MVC
 * Spring Data JPA
-* PostgreSQL
+* MySQL 8
+* Docker Compose
+* phpMyAdmin
 * JWT (JJWT)
 * Swagger / OpenAPI
 * Lombok
@@ -89,31 +94,44 @@ src/main/java/br/com/cotiinformatica/api_usuarios/
 git clone https://github.com/beatrizlima-tech/api-usuarios.git
 ```
 
-## 2. Configure o banco de dados
+## 2. Suba o banco de dados
 
-Crie o banco PostgreSQL e configure as credenciais no arquivo:
+Na raiz do projeto execute:
 
-```properties
-application.properties
+```bash
+docker compose up -d
 ```
+
+Serão iniciados:
+
+* **MySQL 8**
+
+    * Porta: **3307**
+    * Banco: **bd_usuarios**
+
+* **phpMyAdmin**
+
+    * URL: `http://localhost:5052`
+
+---
+
+## 3. Configure a aplicação
+
+No arquivo `application.properties`, configure a conexão com o banco e a chave JWT.
 
 Exemplo:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/seu_banco
-spring.datasource.username=postgres
-spring.datasource.password=senha
-```
+spring.datasource.url=jdbc:mysql://localhost:3307/bd_usuarios
+spring.datasource.username=coti
+spring.datasource.password=coti
 
-Também configure a chave JWT:
-
-```properties
 jwt.secret=sua_chave_secreta
 ```
 
 ---
 
-## 3. Execute a aplicação
+## 4. Execute a aplicação
 
 ```bash
 mvn spring-boot:run
@@ -121,9 +139,9 @@ mvn spring-boot:run
 
 ---
 
-## 4. Acesse a documentação
+## 5. Acesse a documentação
 
-```text
+```
 http://localhost:8080/swagger-ui.html
 ```
 
@@ -144,7 +162,7 @@ Service
 Repository
         │
         ▼
-PostgreSQL
+MySQL
 ```
 
 ---
@@ -160,7 +178,8 @@ PostgreSQL
 * JWT
 * SHA-256
 * Regex para validação
-* PostgreSQL
+* Docker Compose
+* MySQL
 * Swagger/OpenAPI
 
 ---
@@ -173,16 +192,13 @@ PostgreSQL
 * Bean Validation
 * Tratamento global de exceções
 * Testes automatizados
-* Dockerização da aplicação
+* Dockerizar a aplicação Spring Boot
 
 ---
 
 # 👩‍💻 Autora
 
-Desenvolvido por **Beatriz Lima**
+**Beatriz Lima**
 
-🔗 GitHub
-https://github.com/beatrizlima-tech
-
-💼 LinkedIn
-https://www.linkedin.com/in/beatrizlima-tech
+* GitHub: https://github.com/beatrizlima-tech
+* LinkedIn: https://www.linkedin.com/in/beatrizlima-tech
