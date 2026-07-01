@@ -2,7 +2,7 @@ services:
 
   mysql:
     image: mysql:8
-    container_name: mysql-api-usuarios
+    container_name: mysql-usuarios-api
     restart: always
     ports:
       - "3307:3306"
@@ -14,9 +14,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - api_usuarios_network
+      - usuarios_api_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "coti", "-pcoti"]
+      test: ["CMD", "mysqladmin", "ping", "-h",
+             "localhost", "-u", "coti", "-pcoti"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +25,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin-api-usuarios
+    container_name: phpmyadmin-usuarios-api
     restart: always
     ports:
       - "5052:80"
@@ -37,11 +38,11 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - api_usuarios_network
+      - usuarios_api_network
 
 volumes:
   mysql_data:
 
 networks:
-  api_usuarios_network:
+  usuarios_api_network:
     driver: bridge
